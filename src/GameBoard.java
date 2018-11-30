@@ -1,5 +1,7 @@
 public class GameBoard {
 	private char[][] board = new char[8][8];
+	private byte[][] positions;
+	private int[][] weights;
   
   public GameBoard() {
     for (int i = 0; i < board.length; i++) {
