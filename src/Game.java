@@ -27,4 +27,8 @@ public class Game {
 	  board.move(move, isX);
 	  tracker.submitMove(isX, move);
   }
+
+  public GameBoard getBoard() {
+    return board;
+  }
 }
