@@ -23,14 +23,10 @@ public class GameBoard {
       val = 'O';
       check = -1;
     }
-    
-    int row = pos.charAt(0);
-    if(row > 96) {
-    	row -= 32;
-    }
-    row -= 65;
-    int col = pos.charAt(1);
-    col -= 49;
+
+    int[] tmp = moveToInt(pos);
+    int col = tmp[0];
+    int row = tmp[1];
     
     board[row][col] = val;
     positions[row][col] = check;
@@ -46,14 +42,9 @@ public class GameBoard {
           check = -1;
       }
 
-      // Conversion
-      int row = pos.charAt(0);
-      if(row > 96) {
-          row -= 32;
-      }
-      row -= 65;
-      int col = pos.charAt(1);
-      col -= 49;
+      int[] tmp = moveToInt(pos);
+      int col = tmp[0];
+      int row = tmp[1];
 
       // Column check
       for (int i = 0; i < positions.length; i++) {
@@ -160,5 +151,23 @@ public class GameBoard {
     }
     
     return out;
+  }
+
+  // Big brain
+  // 0 - col (x) 1 - row (y)
+  public static int[] moveToInt(String pos) {
+      int[] output = new int[2];
+
+      int row = pos.charAt(0);
+      if(row > 96) {
+          row -= 32;
+      }
+      row -= 65;
+      int col = pos.charAt(1);
+      col -= 49;
+
+      output[0] = col;
+      output[1] = row;
+      return output;
   }
 }
