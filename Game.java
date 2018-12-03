@@ -23,9 +23,14 @@ public class Game {
     System.out.println();
   }
   
-  public void submitMove(String move, boolean isX) {
-	  board.move(move, isX);
-	  tracker.submitMove(isX, move);
+  public boolean submitMove(String move, boolean isX) {
+	  if(tracker.submitMove(isX, move)) {
+		  board.move(move, isX);
+		  return true;
+	  }
+	  else {
+		  return false;
+	  }
   }
 
   public GameBoard getBoard() {

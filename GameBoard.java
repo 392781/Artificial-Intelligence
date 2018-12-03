@@ -152,6 +152,10 @@ public class GameBoard {
     
     return out;
   }
+  
+  public byte[][] getPositions() {
+	  return positions;
+  }
 
   // Big brain
   // 0 - col (x) 1 - row (y)
