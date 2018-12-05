@@ -30,28 +30,27 @@ public class MoveTracker {
         }
     }
 
-    //step: turn that you want to print.
+    //step: row that you are trying to print
     public void printTurn(int step) {
         if (step == 0) {
             if (Game.isX) System.out.println("Player vs. Opponent");
             else System.out.println("Opponent vs. Player");
         } else if (step > 0 && step <= 8) {
-            System.out.print("   " + step + ". ");
-            if (step - 1 < xMoves.size()) {
-                System.out.print(xMoves.get(step - 1) + " ");
-            }
-            if (step - 1 < oMoves.size()) {
-                System.out.print(oMoves.get(step - 1));
-            }
-            System.out.println();
-        } else {
-            System.out.print("                         " + step + ". ");
-            if (step - 1 < xMoves.size()) {
-                System.out.print(xMoves.get(step - 1) + " ");
-            }
-            if (step - 1 < oMoves.size()) {
-                System.out.print(oMoves.get(step - 1));
-            }
+ 
+        	for(int i = 0; step + i <= xMoves.size(); i+= 8) {
+                System.out.print("   " + (step + i) + ". ");
+                if( (step + i) == 9) System.out.print(" ");
+                if ( (step + i) - 1 < xMoves.size()) {
+                    System.out.print(xMoves.get( (step + i) - 1) + " ");
+                }
+                if ( (step + i) - 1 < oMoves.size()) {
+                    System.out.print(oMoves.get( (step + i) - 1));
+                    System.out.print(" | ");
+                }
+                else {
+                	System.out.print("~");
+                }
+        	}
             System.out.println();
         }
     }

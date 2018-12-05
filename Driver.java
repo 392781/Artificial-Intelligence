@@ -16,7 +16,7 @@ public class Driver {
             isX = !isX;
             game.printState();
         }
-        for (int i = 0; i < 30; ++i) {
+        for (int i = 0; i < 40; ++i) {
             int bestX = 4;
             int bestY = 4;
             int bestH = 0;

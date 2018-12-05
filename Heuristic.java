@@ -14,7 +14,7 @@ public class Heuristic {
 
     //this algorithm is extremely complicated
     //but, lucky for you, you don't need to know how it works
-    //basically, it operates on each of the 8 positions around the x,y coordinate given
+    //basically, it operates on each of the 4 positions around the x,y coordinate given
     //for each of those positions, if the piece there is an allied piece, we enter attacking mode
     //if it's an enemy piece, we enter blocking mode
     //if it's an empty square, we just stop looking entirely.
@@ -42,12 +42,13 @@ public class Heuristic {
         byte us = (byte) ((isX) ? 1 : -1);
         byte them = (byte) (us * -1);
 
-        //double for-loop for each of the 8 directional pairs
+        //double for-loop for each of the 4 directional pairs
         for (int moveX = -1; moveX <= 1; moveX++) {
             for (int moveY = -1; moveY <= 1; moveY++) {
-                if (moveX == 0 && moveY == 0) {
+                if ( (moveX != 0 && moveY != 0) || (moveX == 0 && moveY == 0)) {
                     continue;
                 }
+                
                 //how many in a row we have found
                 int inARow = 0;
                 int emptySpace = 0;

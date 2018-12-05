@@ -10,16 +10,9 @@ public class Game {
     }
 
     public void printState() {
-        int turnsPlayed = tracker.getTurnsPlayed();
-        for (int i = 0; i <= 8 + turnsPlayed; i++) {
-            if (i <= 8) {
-                System.out.print(board.outputRow(i));
-            }
-            if (i <= turnsPlayed) {
-                tracker.printTurn(i);
-            } else {
-                System.out.println();
-            }
+        for (int i = 0; i <= 8; i++) {
+            System.out.print(board.outputRow(i));
+            tracker.printTurn(i);
         }
         System.out.println();
     }
