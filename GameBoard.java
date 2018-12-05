@@ -1,7 +1,6 @@
 public class GameBoard {
     private char[][] board = new char[8][8];
     private byte[][] positions = new byte[8][8];
-    private int[][] weights;  
 
     public GameBoard() {
         for (int i = 0; i < board.length; i++) {
@@ -70,66 +69,6 @@ public class GameBoard {
             if (counter == 4) {
                 return true;
             }
-        }
-
-        // Are you ready for the magic?
-
-        // Top-left to bottom-right diag check
-        int diagDiff = col - row;
-        int start = 0;
-        int end = positions.length - Math.abs(diagDiff);
-        int j = diagDiff;
-
-        if (diagDiff < 0) {
-            diagDiff = Math.abs(diagDiff);
-            start = diagDiff;
-            end = positions.length;
-            j = 0;
-        }
-
-        for (int i = start; i < end; i++) {
-            if (diagDiff > 4) break;
-
-            if (positions[i][j] == check) {
-                counter++;
-            } else {
-                counter = 0;
-            }
-
-            if (counter == 4) {
-                return true;
-            }
-
-            j++;
-        }
-
-        //Bottom-left to top-right diag check
-        int diagSum = col + row;
-        start = 0;
-        end = diagSum + 1;
-
-        if (diagSum > 11 || diagSum < 3) {
-            return false;
-        }
-
-        if (diagSum > 7) {
-            start = diagSum - 7;
-            end = positions.length;
-        }
-        j = end - 1;
-
-        for (int i = start; i < end; i++) {
-            if (positions[i][j] == check) {
-                counter++;
-            } else {
-                counter = 0;
-            }
-
-            if (counter == 4) {
-                return true;
-            }
-
-            j--;
         }
         return false;
     }

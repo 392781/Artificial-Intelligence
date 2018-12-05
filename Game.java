@@ -1,9 +1,12 @@
+import java.util.HashSet;
+
 public class Game {
     public static boolean isX;
     private MoveTracker tracker;
     private GameBoard board;
     private boolean[] plays;
     private static int[] coords;
+    HashSet<String> validMoves = new HashSet<String>();
 
     public Game(boolean _isX) {
     	plays = new boolean[64];
@@ -11,6 +14,19 @@ public class Game {
         tracker = new MoveTracker();
         board = new GameBoard();
         coords = new int[2];
+
+        char x = 'a';
+        char y = '1';
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                validMoves.add("" + x + y);
+                y++;
+            }
+            x++;
+            y = '1';
+        }
+
     }
 
     public void printState() {
@@ -22,8 +38,9 @@ public class Game {
     }
 
     public boolean submitMove(String move, boolean isX) {
-        if (tracker.submitMove(isX, move)) {
-        	updateMoves(GameBoard.moveToInt(move));
+        if (!validMoves.contains(move)) {
+            return false;
+        } else if (tracker.submitMove(isX, move)) {
             board.move(move, isX);
             return true;
         } else {
