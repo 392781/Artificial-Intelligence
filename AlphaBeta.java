@@ -27,7 +27,7 @@ public class AlphaBeta {
         		if(plays[i]) {
         			int x = i%8;
         			int y = i/8;
-        			
+
         			if(isX) {
         				cur += h.scorePosition(y, x, positions, isX);
         			}
@@ -58,9 +58,9 @@ public class AlphaBeta {
         	    		setRight = true;
         	    	}
         			
-        			positions[x][y] = (byte)((isX) ? 1 : -1);
+        			positions[y][x] = (byte)((isX) ? 1 : -1);
         			cur += DFS(depthLimit - 1, !isX, plays, positions);
-        			positions[x][y] = 0;
+        			positions[y][x] = 0;
         			
         			plays[8*y+x] = true;
         			if(setUp) {
@@ -75,13 +75,14 @@ public class AlphaBeta {
         	    	if(setRight) {
         	    		plays[8*y + (x + 1)] = false;
         	    	}
-        			
-        			if(isX && cur > highScore) {
+
+        	    	//CHANGED
+        			if(isX && cur > highScore && positions[y][x] == 0) {
         				highScore = cur;
         				highX = x;
         				highY = y;
         			}
-        			else if(!isX && cur < highScore) {
+        			else if(!isX && cur < highScore && positions[y][x] == 0) {
         				highScore = cur;
         				highX = x;
         				highY = y;
