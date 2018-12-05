@@ -7,6 +7,7 @@ public class Heuristic {
     private final int bTHREE = 150;
     private final int bFOUR = 50000;
     private final int BLOCKBONUS = 1;
+    private final int WALLPENALTY = -1;
 
     public Heuristic() {
 
@@ -43,146 +44,203 @@ public class Heuristic {
         byte them = (byte) (us * -1);
 
         //double for-loop for each of the 4 directional pairs
-        for (int moveX = -1; moveX <= 1; moveX++) {
-            for (int moveY = -1; moveY <= 1; moveY++) {
-                if ( (moveX != 0 && moveY != 0) || (moveX == 0 && moveY == 0)) {
-                    continue;
+        for (int n = 0; n < 4; n++) {
+        	
+        	int moveX = 0;
+        	int moveY = 0;
+        	
+        	switch(n) {
+        	case 0:
+        		moveX = -1;
+        		moveY = 0;
+        		break;
+        	case 1:
+        		moveX = 1;
+        		moveY = 0;
+        		break;
+        	case 2:
+        		moveY = -1;
+        		moveX = 0;
+        		break;
+        	case 3:
+        		moveY = 1;
+        		moveX = 0;
+        		break;
+        	}
+            
+            //how many in a row we have found
+            int inARow = 0;
+            int emptySpace = 0;
+            //the current x and y position we are checking
+            int curX = x;
+            int curY = y;
+            //whether we are attacking or blocking
+            boolean attacking = false;
+            boolean blocking = false;
+            //whether our attack is finishable
+            boolean finishable = true;
+            boolean breakChain = false;
+
+            for (int i = 0; i < 4; ++i) {
+                //move our current position
+                curX += moveX;
+                curY += moveY;
+
+                //if we passed the edge of the board, stop looking
+                if (!checkBounds(curX, curY, bound)) {
+                	if(i == 0) {
+                		score += WALLPENALTY;
+                	}
+                    break;
                 }
-                
-                //how many in a row we have found
-                int inARow = 0;
-                int emptySpace = 0;
-                //the current x and y position we are checking
-                int curX = x;
-                int curY = y;
-                //whether we are attacking or blocking
-                boolean attacking = false;
-                boolean blocking = false;
-                //whether our attack is finishable
-                boolean finishable = true;
-                boolean breakChain = false;
 
-                for (int i = 0; i < 4; ++i) {
-                    //move our current position
-                    curX += moveX;
-                    curY += moveY;
+                byte cur = positions[curX][curY];
 
-                    //if we passed the edge of the board, stop looking
-                    if (!checkBounds(curX, curY, bound)) {
-                        break;
+                //if we havent decided whether we're attacking or blocking yet
+                if (!attacking && !blocking && cur != 0) {
+                    inARow++;
+                    //if we found a piece of ours, set us to attacking mode
+                    if (cur == us) {
+                        attacking = true;
                     }
-
-                    byte cur = positions[curX][curY];
-
-                    //if we havent decided whether we're attacking or blocking yet
-                    if (!attacking && !blocking && cur != 0) {
+                    //if we found a piece of theirs, set us to blocking mode
+                    else {
+                        blocking = true;
+                    }
+                }
+                //if we're attacking and found another of our pieces
+                else if (attacking && cur != them) {
+                    if (!breakChain && cur == us) {
                         inARow++;
-                        //if we found a piece of ours, set us to attacking mode
-                        if (cur == us) {
-                            attacking = true;
-                        }
-                        //if we found a piece of theirs, set us to blocking mode
-                        else {
-                            blocking = true;
-                        }
+                    } else {
+                        breakChain = true;
+                        emptySpace++;
                     }
-                    //if we're attacking and found another of our pieces
-                    else if (attacking && cur != them) {
-                        if (!breakChain && cur == us) {
+                }
+                //if we're blocking and found another of their pieces
+                else if (blocking && cur != us) {
+                	if (!breakChain && cur == them) {
+                        inARow++;
+                    } else {
+                        breakChain = true;
+                        emptySpace++;
+                    }
+                }
+                //if none of those things were true, we stop looking
+                else {
+                    break;
+                }
+            }
+
+            //start looking in the other direction for the same pattern
+            //we found in the original direction
+            curX = x;
+            curY = y;
+            breakChain = false;
+            boolean skip = false;
+
+            for (int i = 0; i < 4; i++) {
+                //move our cursor in the opposite direction
+                curX -= moveX;
+                curY -= moveY;
+
+                //if we passed the edge of the board, stop looking
+                if (!checkBounds(curX, curY, bound)) {
+                    //if we hit the edge and we were attacking, check how many pieces
+                    //we've found in a row. if it's less than 3, this is an unwinnable attack.
+                    if ( (attacking || blocking) && inARow + emptySpace < 3) {
+                        finishable = false;
+                    }
+                    break;
+                }
+
+                byte cur = positions[curX][curY];
+                if (attacking) {
+                    //if we found a piece of theirs blocking us, check how many pieces
+                    //we've found in a row. if it's less than 3, this is an unwinnable attack
+                    if (!breakChain) {
+                        if (cur == them && inARow + emptySpace < 3) {
+                            finishable = false;
+                            break;
+                        }
+                        //otherwise, if we found another of our pieces, increment counter
+                        else if (cur == us) {
                             inARow++;
-                        } else {
+                            if(i == 0) {
+                            	skip = true;
+                            }
+                        }
+                        //otherwise, we found an empty space or can win, so stop looking.
+                        else {
                             breakChain = true;
                             emptySpace++;
                         }
-                    }
-                    //if we're blocking and found another of their pieces
-                    else if (blocking && cur == them) {
-                        inARow++;
-                    }
-                    //if none of those things were true, we stop looking
-                    else {
-                        break;
-                    }
-                }
-
-                //start looking in the other direction for the same pattern
-                //we found in the original direction
-                curX = x;
-                curY = y;
-                breakChain = false;
-
-                for (int i = 0; i < 4; i++) {
-                    //move our cursor in the opposite direction
-                    curX -= moveX;
-                    curY -= moveY;
-
-                    //if we passed the edge of the board, stop looking
-                    if (!checkBounds(curX, curY, bound)) {
-                        //if we hit the edge and we were attacking, check how many pieces
-                        //we've found in a row. if it's less than 3, this is an unwinnable attack.
-                        if (attacking && inARow + emptySpace < 3) {
+                    } else {
+                        if (cur == them && inARow + emptySpace < 3) {
                             finishable = false;
-                        }
-                        break;
-                    }
-
-                    byte cur = positions[curX][curY];
-                    if (attacking) {
-                        //if we found a piece of theirs blocking us, check how many pieces
-                        //we've found in a row. if it's less than 3, this is an unwinnable attack
-                        if (!breakChain) {
-                            if (cur == them && inARow + emptySpace < 3) {
-                                finishable = false;
-                                break;
-                            }
-                            //otherwise, if we found another of our pieces, increment counter
-                            else if (cur == us) {
-                                inARow++;
-                            }
-                            //otherwise, we found an empty space or can win, so stop looking.
-                            else {
-                                breakChain = true;
-                                emptySpace++;
-                            }
+                            break;
                         } else {
-                            if (cur == them && inARow + emptySpace < 3) {
-                                finishable = false;
-                                break;
-                            } else {
-                                emptySpace++;
-                            }
+                            emptySpace++;
                         }
-                    }
-                    //if we're blocking, look exclusively for their pieces.
-                    else if (blocking && cur == them) {
-                        inARow++;
-                    }
-                    //otherwise, we stop looking
-                    else {
-                        break;
                     }
                 }
-
-                if (attacking && finishable) {
-                    if (inARow == 1) {
-                        score += TWO;
-                    } else if (inARow == 2) {
-                        score += THREE;
-                    } else if (inARow >= 3) {
-                        score += FOUR;
+                if (blocking) {
+                    //if we found a piece of theirs blocking us, check how many pieces
+                    //we've found in a row. if it's less than 3, this is an unwinnable attack
+                    if (!breakChain) {
+                        if (cur == us && inARow + emptySpace < 3) {
+                            finishable = false;
+                            break;
+                        }
+                        //otherwise, if we found another of our pieces, increment counter
+                        else if (cur == them) {
+                            inARow++;
+                            if(i == 0) {
+                            	skip = true;
+                            }
+                        }
+                        //otherwise, we found an empty space or can win, so stop looking.
+                        else {
+                            breakChain = true;
+                            emptySpace++;
+                        }
+                    } else {
+                        if (cur == us && inARow + emptySpace < 3) {
+                            finishable = false;
+                            break;
+                        } else {
+                            emptySpace++;
+                        }
                     }
-                } else if (blocking) {
-                    if (inARow == 1) {
-                        score += BLOCKBONUS;
-                    } else if (inARow == 2) {
-                        score += bTHREE;
-                    } else if (inARow >= 3) {
-                        score += bFOUR;
-                    }
+                }
+                //otherwise, we stop looking
+                else {
+                    break;
                 }
             }
-        }
 
+            if (attacking && finishable) {
+                if (inARow == 1) {
+                    score += TWO;
+                } else if (inARow == 2) {
+                    score += THREE;
+                } else if (inARow >= 3) {
+                    score += FOUR;
+                }
+            } else if (blocking && finishable) {
+                if (inARow == 1) {
+                    score += BLOCKBONUS;
+                } else if (inARow == 2) {
+                    score += bTHREE;
+                } else if (inARow >= 3) {
+                    score += bFOUR;
+                }
+            }
+            
+            if(skip) {
+            	n++;
+            }
+        }
 
         return score;
     }
