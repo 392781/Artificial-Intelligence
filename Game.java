@@ -41,6 +41,7 @@ public class Game {
         if (!validMoves.contains(move)) {
             return false;
         } else if (tracker.submitMove(isX, move)) {
+            updateMoves(GameBoard.moveToInt(move));
             board.move(move, isX);
             return true;
         } else {
