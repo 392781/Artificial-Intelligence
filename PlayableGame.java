@@ -5,6 +5,7 @@ public class PlayableGame {
         Scanner kb = new Scanner(System.in);
         boolean flag = true;
         boolean isX;
+        char[] moves = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         String input;
 
         do {
@@ -27,6 +28,7 @@ public class PlayableGame {
 
 
         Game game = new Game(isX);
+        AlphaBeta ab = new AlphaBeta(game);
 
         String move;
         boolean exit = true;
@@ -46,7 +48,8 @@ public class PlayableGame {
         // Else do this
         do {
             //something something generated player move
-            move = "a1";
+            ab.DFS(0, isX);
+            move = "" + moves[ab.bestY] + (ab.bestX + 1);
             game.submitMove(move, isX);
             game.printState();
             System.out.println("  Player's move is: " + move);
