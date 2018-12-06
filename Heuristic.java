@@ -4,7 +4,7 @@ public class Heuristic {
     private final int TWO = 10;
     private final int THREE = 100;
     private final int FOUR = 1000000;
-    private final int bTHREE = 150;
+    private final int bTHREE = 120;
     private final int bFOUR = 50000;
     private final int BLOCKBONUS = 1;
     private final int WALLPENALTY = -1;

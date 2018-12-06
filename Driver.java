@@ -6,9 +6,20 @@ public class Driver {
         char move = 'g';
         char[] moves = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 
+        for (int i = 0; i < 2; ++i) {
+            boolean cont = true;
+            while (cont) {
+                char randRow = moves[(int) (Math.random() * moves.length)];
+                int randCol = 1 + (int) (Math.random() * 8);
+                cont = !game.submitMove("" + randRow + randCol, isX);
+            }
+            isX = !isX;
+            game.printState();
+        }
+        
         for (int i = 0; i < 40; ++i) {
-        	ab.DFS(12, isX);
-        	System.out.println("bestX:" + (ab.bestX + 1) + ", bestY: " + ab.bestY);
+        	ab.DFS(8, isX);
+        	System.out.println("bestX:" + (ab.bestX + 1) + ", bestY: " + (ab.bestY + 1));
             String bestMove = "" + moves[ab.bestY] + (ab.bestX + 1);
             System.out.println("Playing in: " + bestMove);
             game.submitMove(bestMove, isX);
