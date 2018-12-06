@@ -48,7 +48,7 @@ public class PlayableGame {
         // Else do this
         do {
             //something something generated player move
-            ab.DFS(0, isX);
+            ab.DFS(8, isX);
             move = "" + moves[ab.bestY] + (ab.bestX + 1);
             game.submitMove(move, isX);
             game.printState();
@@ -74,9 +74,5 @@ public class PlayableGame {
                 System.out.println("   Opponent wins!");
             }
         } while (!exit);
-    }
-
-    public static void main(String[] args) {
-        run();
     }
 }

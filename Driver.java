@@ -1,5 +1,7 @@
 public class Driver {
     public static void main(String[] args) {
+    	PlayableGame.run();
+    	/*
         Game game = new Game(true);
     	AlphaBeta ab = new AlphaBeta(game);
         boolean isX = true;
@@ -27,6 +29,7 @@ public class Driver {
             isX = !isX;
 
         }
+        */
     	
     	//testHeuristic();
     }

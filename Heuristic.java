@@ -4,10 +4,11 @@ public class Heuristic {
     private final int TWO = 10;
     private final int TWOPLUS = 50;
     private final int THREE = 100;
-    private final int THREEPLUS = 44444;
+    private final int THREEPLUS = 950000;
     private final int FOUR = 1000000;
-    private final int bTHREE = 120;
-    private final int bFOUR = 50000;
+    private final int bTHREE = 11;
+    private final int bTHREEPLUS = 50000;
+    private final int bFOUR = 60000;
     private final int BLOCKBONUS = 1;
     private final int WALLPENALTY = -1;
 
@@ -83,7 +84,8 @@ public class Heuristic {
             boolean finishable = true;
             boolean breakChain = false;
             
-            boolean unblocked = true;
+            boolean blocked = true;
+            boolean blocked2 = true;
 
             for (int i = 0; i < 4; ++i) {
                 //move our current position
@@ -94,9 +96,6 @@ public class Heuristic {
                 if (!checkBounds(curX, curY, bound)) {
                 	if(i == 0) {
                 		score += WALLPENALTY;
-                	}
-                	if(!breakChain) {
-                		unblocked = false;
                 	}
                     break;
                 }
@@ -122,11 +121,11 @@ public class Heuristic {
                             inARow++;                    		
                     	}
                     	else if(cur == them) {
-                    		unblocked = false;
                     		break;
                     	}
                     	else {
                     		breakChain = true;
+                    		blocked = false;
                     		emptySpace++;
                     	}
                     } else if(cur == 0) {
@@ -142,10 +141,10 @@ public class Heuristic {
                 			inARow++;
                 		}
                 		else if(cur == us) {
-                			unblocked = false;
                 			break;
                 		}
                 		else {
+                			blocked = false;
                 			breakChain = true;
                 			emptySpace++;
                 		}
@@ -179,9 +178,7 @@ public class Heuristic {
                     //we've found in a row. if it's less than 3, this is an unwinnable attack.
                     if ( (attacking || blocking) && inARow + emptySpace < 3) {
                         finishable = false;
-                    } else if(!breakChain) {
-                    	unblocked = false;
-                    }
+                    } 
                     break;
                 }
 
@@ -191,7 +188,6 @@ public class Heuristic {
                     //we've found in a row. if it's less than 3, this is an unwinnable attack
                     if (!breakChain) {
                         if (cur == them) {
-                        	unblocked = false;
                         	if(inARow + emptySpace < 3) {
                                 finishable = false;
                         	}
@@ -206,6 +202,7 @@ public class Heuristic {
                         }
                         //otherwise, we found an empty space 
                         else {
+                        	blocked2 = false;
                             breakChain = true;
                             emptySpace++;
                         }
@@ -223,7 +220,6 @@ public class Heuristic {
                     //we've found in a row. if it's less than 3, this is an unwinnable attack
                     if (!breakChain) {
                         if (cur == us) {
-                        	unblocked = false;
                         	if(inARow + emptySpace < 3) {
                                 finishable = false;
                         	}
@@ -238,6 +234,7 @@ public class Heuristic {
                         }
                         //otherwise, we found an empty space or can win, so stop looking.
                         else {
+                        	blocked2 = false;
                             breakChain = true;
                             emptySpace++;
                         }
@@ -258,13 +255,13 @@ public class Heuristic {
 
             if (attacking && finishable) {
                 if (inARow == 1) {
-                	if(unblocked) {
+                	if(!blocked && !blocked2) {
                 		score += TWOPLUS;
                 	} else {
                         score += TWO;                		
                 	}
                 } else if (inARow == 2) {
-                	if(unblocked) {
+                	if(!blocked && !blocked2) {
                 		score += THREEPLUS;
                 	} else {
                         score += THREE;
@@ -276,8 +273,8 @@ public class Heuristic {
                 if (inARow == 1) {
                     score += BLOCKBONUS;
                 } else if (inARow == 2) {
-                	if(unblocked) {
-                		score += bFOUR;
+                	if(!blocked && !blocked2) {
+                		score += bTHREEPLUS;
                 	}
                 	else {
                         score += bTHREE;

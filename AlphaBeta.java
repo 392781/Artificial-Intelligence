@@ -31,7 +31,7 @@ public class AlphaBeta {
 
         			if(isX) {
         				cur += h.scorePosition(y, x, positions, isX);
-        				if(cur > 900000) {
+        				if(cur > 990000) {
         					this.bestX = x;
                         	this.bestY = y;
         					return cur;
@@ -39,7 +39,7 @@ public class AlphaBeta {
         			}
         			else {
         				cur -= h.scorePosition(y, x, positions, isX);
-        				if(cur < -900000) {
+        				if(cur < -990000) {
         					this.bestX = x;
                         	this.bestY = y;
         					return cur;
@@ -71,10 +71,10 @@ public class AlphaBeta {
         			
         			positions[y][x] = (byte)((isX) ? 1 : -1);
         			if(isX) {
-            			cur += DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
+            			cur -= DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
         			}
         			else {
-        				cur -= DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
+        				cur += DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
         			}
         			positions[y][x] = 0;
         			
@@ -101,9 +101,11 @@ public class AlphaBeta {
         					alpha = highScore;
         				}
         				
+        				
         				if(alpha >= beta) {
         					break;
         				}
+        				
         			}
         			else if(!isX && cur < highScore && positions[y][x] == 0) {
         				highScore = cur;
@@ -112,9 +114,11 @@ public class AlphaBeta {
         				if(highScore < beta) {
         					beta = highScore;
         				}
+        				
         				if(alpha >= beta) {
         					break;
         				}
+        				
         			}
         			
         			this.bestX = highX;
