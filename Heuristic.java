@@ -2,7 +2,9 @@
 public class Heuristic {
     //scoring vars for conditions
     private final int TWO = 10;
+    private final int TWOPLUS = 50;
     private final int THREE = 100;
+    private final int THREEPLUS = 44444;
     private final int FOUR = 1000000;
     private final int bTHREE = 120;
     private final int bFOUR = 50000;
@@ -80,6 +82,8 @@ public class Heuristic {
             //whether our attack is finishable
             boolean finishable = true;
             boolean breakChain = false;
+            
+            boolean unblocked = true;
 
             for (int i = 0; i < 4; ++i) {
                 //move our current position
@@ -90,6 +94,9 @@ public class Heuristic {
                 if (!checkBounds(curX, curY, bound)) {
                 	if(i == 0) {
                 		score += WALLPENALTY;
+                	}
+                	if(!breakChain) {
+                		unblocked = false;
                 	}
                     break;
                 }
@@ -109,21 +116,43 @@ public class Heuristic {
                     }
                 }
                 //if we're attacking and found another of our pieces
-                else if (attacking && cur != them) {
-                    if (!breakChain && cur == us) {
-                        inARow++;
-                    } else {
-                        breakChain = true;
+                else if (attacking) {
+                    if (!breakChain) {
+                    	if(cur == us) {
+                            inARow++;                    		
+                    	}
+                    	else if(cur == them) {
+                    		unblocked = false;
+                    		break;
+                    	}
+                    	else {
+                    		breakChain = true;
+                    		emptySpace++;
+                    	}
+                    } else if(cur == 0) {
                         emptySpace++;
+                    } else {
+                    	break;
                     }
                 }
                 //if we're blocking and found another of their pieces
-                else if (blocking && cur != us) {
-                	if (!breakChain && cur == them) {
-                        inARow++;
-                    } else {
-                        breakChain = true;
+                else if (blocking) {
+                	if (!breakChain) {
+                		if(cur == them) {
+                			inARow++;
+                		}
+                		else if(cur == us) {
+                			unblocked = false;
+                			break;
+                		}
+                		else {
+                			breakChain = true;
+                			emptySpace++;
+                		}
+                    } else if(cur == 0){
                         emptySpace++;
+                    } else {
+                    	break;
                     }
                 }
                 //if none of those things were true, we stop looking
@@ -150,6 +179,8 @@ public class Heuristic {
                     //we've found in a row. if it's less than 3, this is an unwinnable attack.
                     if ( (attacking || blocking) && inARow + emptySpace < 3) {
                         finishable = false;
+                    } else if(!breakChain) {
+                    	unblocked = false;
                     }
                     break;
                 }
@@ -159,8 +190,11 @@ public class Heuristic {
                     //if we found a piece of theirs blocking us, check how many pieces
                     //we've found in a row. if it's less than 3, this is an unwinnable attack
                     if (!breakChain) {
-                        if (cur == them && inARow + emptySpace < 3) {
-                            finishable = false;
+                        if (cur == them) {
+                        	unblocked = false;
+                        	if(inARow + emptySpace < 3) {
+                                finishable = false;
+                        	}
                             break;
                         }
                         //otherwise, if we found another of our pieces, increment counter
@@ -170,7 +204,7 @@ public class Heuristic {
                             	skip = true;
                             }
                         }
-                        //otherwise, we found an empty space or can win, so stop looking.
+                        //otherwise, we found an empty space 
                         else {
                             breakChain = true;
                             emptySpace++;
@@ -188,8 +222,11 @@ public class Heuristic {
                     //if we found a piece of theirs blocking us, check how many pieces
                     //we've found in a row. if it's less than 3, this is an unwinnable attack
                     if (!breakChain) {
-                        if (cur == us && inARow + emptySpace < 3) {
-                            finishable = false;
+                        if (cur == us) {
+                        	unblocked = false;
+                        	if(inARow + emptySpace < 3) {
+                                finishable = false;
+                        	}
                             break;
                         }
                         //otherwise, if we found another of our pieces, increment counter
@@ -221,9 +258,17 @@ public class Heuristic {
 
             if (attacking && finishable) {
                 if (inARow == 1) {
-                    score += TWO;
+                	if(unblocked) {
+                		score += TWOPLUS;
+                	} else {
+                        score += TWO;                		
+                	}
                 } else if (inARow == 2) {
-                    score += THREE;
+                	if(unblocked) {
+                		score += THREEPLUS;
+                	} else {
+                        score += THREE;
+                	}
                 } else if (inARow >= 3) {
                     score += FOUR;
                 }
@@ -231,7 +276,12 @@ public class Heuristic {
                 if (inARow == 1) {
                     score += BLOCKBONUS;
                 } else if (inARow == 2) {
-                    score += bTHREE;
+                	if(unblocked) {
+                		score += bFOUR;
+                	}
+                	else {
+                        score += bTHREE;
+                	}
                 } else if (inARow >= 3) {
                     score += bFOUR;
                 }

@@ -14,10 +14,10 @@ public class AlphaBeta {
     	boolean[] plays = g.getPlays();
     	byte[][] positions = g.getBoard().getPositions();
     	this.depthLimit = depthLimit;
-    	return DFS(depthLimit, isX, plays, positions);
+    	return DFS(depthLimit, isX, plays, positions, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
     
-    private int DFS(int depthLimit, boolean isX, boolean[] plays, byte[][] positions) {
+    private int DFS(int depthLimit, boolean isX, boolean[] plays, byte[][] positions, int alpha, int beta) {
     	if(depthLimit > 1) {
     		int highScore = (isX) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         	int highX = -1;
@@ -31,9 +31,19 @@ public class AlphaBeta {
 
         			if(isX) {
         				cur += h.scorePosition(y, x, positions, isX);
+        				if(cur > 900000) {
+        					this.bestX = x;
+                        	this.bestY = y;
+        					return cur;
+        				}
         			}
         			else {
         				cur -= h.scorePosition(y, x, positions, isX);
+        				if(cur < -900000) {
+        					this.bestX = x;
+                        	this.bestY = y;
+        					return cur;
+        				}
         			}
 
         			plays[i] = false;
@@ -61,10 +71,10 @@ public class AlphaBeta {
         			
         			positions[y][x] = (byte)((isX) ? 1 : -1);
         			if(isX) {
-            			cur -= DFS(depthLimit - 1, !isX, plays, positions);
+            			cur += DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
         			}
         			else {
-        				cur += DFS(depthLimit - 1, !isX, plays, positions);
+        				cur -= DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
         			}
         			positions[y][x] = 0;
         			
@@ -87,11 +97,24 @@ public class AlphaBeta {
         				highScore = cur;
         				highX = x;
         				highY = y;
+        				if(highScore > alpha) {
+        					alpha = highScore;
+        				}
+        				
+        				if(alpha >= beta) {
+        					break;
+        				}
         			}
         			else if(!isX && cur < highScore && positions[y][x] == 0) {
         				highScore = cur;
         				highX = x;
         				highY = y;
+        				if(highScore < beta) {
+        					beta = highScore;
+        				}
+        				if(alpha >= beta) {
+        					break;
+        				}
         			}
         			
         			this.bestX = highX;
@@ -116,6 +139,8 @@ public class AlphaBeta {
     			System.out.println();
         	}
         	
+        	this.bestX = highX;
+        	this.bestY = highY;
         	return highScore;
     	}
     	else {
