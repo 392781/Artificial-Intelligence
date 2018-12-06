@@ -4,21 +4,26 @@ public class AlphaBeta {
 	public int bestX;
 	public int bestY;
 	private int depthLimit;
+	private final long TIMELIMIT = 25000000000L;
 	
     public AlphaBeta(Game game) {
     	g = game;
     	h = new Heuristic();
+
     }
     
     public int DFS(int depthLimit, boolean isX) {
     	boolean[] plays = g.getPlays();
     	byte[][] positions = g.getBoard().getPositions();
     	this.depthLimit = depthLimit;
-    	return DFS(depthLimit, isX, plays, positions, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    	return DFS(depthLimit, isX, plays, positions, Integer.MIN_VALUE, Integer.MAX_VALUE, System.nanoTime());
     }
     
-    private int DFS(int depthLimit, boolean isX, boolean[] plays, byte[][] positions, int alpha, int beta) {
-    	if(depthLimit > 1) {
+    private int DFS(int depthLimit, boolean isX, boolean[] plays, byte[][] positions, int alpha, int beta, long startTime) {
+        long currentTime = System.nanoTime();
+        long elapsedTime = currentTime - startTime;
+
+    	if(depthLimit > 1 && elapsedTime < TIMELIMIT) {
     		int highScore = (isX) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         	int highX = -1;
         	int highY = -1;
@@ -71,10 +76,10 @@ public class AlphaBeta {
         			
         			positions[y][x] = (byte)((isX) ? 1 : -1);
         			if(isX) {
-            			cur -= DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
+            			cur += DFS(depthLimit - 1, !isX, plays, positions, alpha, beta, startTime);
         			}
         			else {
-        				cur += DFS(depthLimit - 1, !isX, plays, positions, alpha, beta);
+        				cur -= DFS(depthLimit - 1, !isX, plays, positions, alpha, beta, startTime);
         			}
         			positions[y][x] = 0;
         			
