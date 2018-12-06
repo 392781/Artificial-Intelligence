@@ -129,15 +129,17 @@ public class AlphaBeta {
         			this.bestX = highX;
                 	this.bestY = highY;
         		}
-        		
+        		/* Prints decision matrix. For debugging.
         		if(depthLimit == this.depthLimit) {
         			System.out.print("[" + cur + "]");
         			if((i + 1) % 8 == 0) {
         				System.out.println();
         			}
         		}
+        		*/
         	}
         	
+        	/* Prints Available Plays. For debugging.
         	if(depthLimit == this.depthLimit) {
         		System.out.print("Plays: {");
     			for(int n = 0; n < plays.length; ++n) {
@@ -147,6 +149,7 @@ public class AlphaBeta {
     			}
     			System.out.println();
         	}
+        	*/
         	
         	this.bestX = highX;
         	this.bestY = highY;
