@@ -59,6 +59,8 @@ public class GameBoard {
             }
         }
 
+        counter = 0;
+
         // Row check
         for (int i = 0; i < positions.length; i++) {
             if (positions[i][col] == check) {
