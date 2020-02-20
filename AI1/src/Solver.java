@@ -155,5 +155,6 @@ public class Solver {
                     break;
             }
         } while (!exit);
+        kb.close();
     }
 }
