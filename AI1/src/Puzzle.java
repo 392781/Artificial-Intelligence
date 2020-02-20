@@ -1,14 +1,14 @@
 import java.util.*;
 
-public class Puzzle_OLD {
+public class Puzzle {
     private int[] shape;
     private final int[] goal = {0,1,2,3,4,5,6,7,8};
 
-    public Puzzle_OLD() {
+    public Puzzle() {
         shape = new int[9];
     }
 
-    public Puzzle_OLD(int[] shape) {
+    public Puzzle(int[] shape) {
         this.shape = shape;
     }
 
@@ -49,8 +49,8 @@ public class Puzzle_OLD {
     }
 
 
-    public ArrayList<Puzzle_OLD> successors() {
-        ArrayList<Puzzle_OLD> successors = new ArrayList<Puzzle_OLD>();
+    public ArrayList<Puzzle> successors() {
+        ArrayList<Puzzle> successors = new ArrayList<Puzzle>();
         int hole = -1;
 
         for (int i = 0; i < shape.length; i++) {
@@ -84,18 +84,18 @@ public class Puzzle_OLD {
 
         for (int i = 0; i < shape.length - 1; i++) {
             for (int j = i + 1; j < shape.length; j++) {
-                if (shape[i] > shape[j] && shape[i] != 0 && shape[j] != 0)
+                if (shape[i] > shape[j] && shape[i] != 0 && shape[j] != 0) {
                     inversions++;
+                }
             }
         }
-
         return (inversions % 2 == 0);
     }
 
-    public static Stack<Puzzle_OLD> generate(int numberOfPuzzles) {
-        Stack<Puzzle_OLD> generatedPuzzles = new Stack<>();
+    public static Stack<Puzzle> generate(int numberOfPuzzles) {
+        Stack<Puzzle> generatedPuzzles = new Stack<>();
         HashSet<Integer> testSet = new HashSet<>();
-        Puzzle_OLD generated;
+        Puzzle generated;
         int val;
 
         for (int i = 0; i < numberOfPuzzles; i++) {
@@ -116,7 +116,7 @@ public class Puzzle_OLD {
                     }
                 }
 
-                generated = new Puzzle_OLD(possible);
+                generated = new Puzzle(possible);
 
             } while(!generated.isSolvable());
             generatedPuzzles.push(generated);
@@ -149,11 +149,11 @@ public class Puzzle_OLD {
     }
 
 
-    private void swap(int hole, int adjacent, ArrayList<Puzzle_OLD> successors) {
+    private void swap(int hole, int adjacent, ArrayList<Puzzle> successors) {
         int[] temp = shape.clone();
         int savedVal    = temp[hole];
         temp[hole]      = temp[adjacent];
         temp[adjacent]  = savedVal;
-        successors.add(new Puzzle_OLD(temp));
+        successors.add(new Puzzle(temp));
     }
 }

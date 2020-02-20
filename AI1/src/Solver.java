@@ -144,6 +144,7 @@ public class Solver_OLD {
                                                 "\n                Nodes: " + manhattanNodeCost);
                             System.out.println();
                         } else {
+                            System.out.println(customPuzzle.isSolvable());
                             System.out.println("\nUnsolveable!!! Try again!");
                         }
 
