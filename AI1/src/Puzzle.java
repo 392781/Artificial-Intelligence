@@ -1,16 +1,19 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
-public class Puzzle {
+public class Puzzle_OLD {
     private int[] shape;
-    private final int[] goal = {0, 1, 2, 3, 4, 6, 7, 8};
+    private final int[] goal = {0,1,2,3,4,5,6,7,8};
 
-    public Puzzle() {
+    public Puzzle_OLD() {
         shape = new int[9];
     }
 
-    public Puzzle(int[] shape) {
-        this.shape = shape.clone();
+    public Puzzle_OLD(int[] shape) {
+        this.shape = shape;
+    }
+
+    public int[] getShape() {
+        return shape;
     }
 
 
@@ -46,7 +49,7 @@ public class Puzzle {
     }
 
 
-    public ArrayList<Puzzle> successors() {
+    public ArrayList<Puzzle_OLD> successors() {
         ArrayList<Puzzle_OLD> successors = new ArrayList<Puzzle_OLD>();
         int hole = -1;
 
@@ -75,10 +78,6 @@ public class Puzzle {
     }
 
 
-    public boolean isGoal() {
-        return Arrays.equals(shape, goal);
-    }
-
 
     public boolean isSolvable() {
         int inversions = 0;
@@ -92,6 +91,45 @@ public class Puzzle {
 
         return (inversions % 2 == 0);
     }
+
+    public static Stack<Puzzle_OLD> generate(int numberOfPuzzles) {
+        Stack<Puzzle_OLD> generatedPuzzles = new Stack<>();
+        HashSet<Integer> testSet = new HashSet<>();
+        Puzzle_OLD generated;
+        int val;
+
+        for (int i = 0; i < numberOfPuzzles; i++) {
+            Random rand = new Random();
+            int[] possible = new int[9];
+
+            do {
+                for (int j = 0; j < 9; j++) {
+                    testSet.add(j);
+                }
+
+                int index = 0;
+                while (!testSet.isEmpty()) {
+                    val = rand.nextInt(9);
+                    if (testSet.contains(val)) {
+                        testSet.remove(val);
+                        possible[index++] = val;
+                    }
+                }
+
+                generated = new Puzzle_OLD(possible);
+
+            } while(!generated.isSolvable());
+            generatedPuzzles.push(generated);
+        }
+
+        return generatedPuzzles;
+    }
+
+
+    public boolean isGoal() {
+        return Arrays.equals(shape, goal);
+    }
+
 
     public String toString() {
         StringBuilder build = new StringBuilder();
@@ -111,11 +149,11 @@ public class Puzzle {
     }
 
 
-    private void swap(int hole, int adjacent, ArrayList<Puzzle> successors) {
+    private void swap(int hole, int adjacent, ArrayList<Puzzle_OLD> successors) {
         int[] temp = shape.clone();
         int savedVal    = temp[hole];
         temp[hole]      = temp[adjacent];
         temp[adjacent]  = savedVal;
-        successors.add(new Puzzle(temp));
+        successors.add(new Puzzle_OLD(temp));
     }
 }
