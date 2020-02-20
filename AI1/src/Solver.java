@@ -1,10 +1,10 @@
 import java.util.*;
 
-public class Solver_OLD {
+public class Solver {
     private static int nodeCost;
     private static int depth;
 
-    public static Stack<Puzzle_OLD> solve(Puzzle_OLD root, String heuristic) {
+    public static Stack<Puzzle> solve(Puzzle root, String heuristic) {
         nodeCost = 0;
         PriorityQueue<Node> pqueue = new PriorityQueue<Node>(new Comparator<Node>() {
             @Override
@@ -17,16 +17,16 @@ public class Solver_OLD {
                     return 0;
             }
         });
-        Stack<Puzzle_OLD> solutionSequence = new Stack<>();
+        Stack<Puzzle> solutionSequence = new Stack<>();
         Node node = new Node(root);
         pqueue.add(node);
 
         while (!pqueue.isEmpty()) {
             Node temp = pqueue.poll();
             if (!temp.getCurrent().isGoal()) {
-                ArrayList<Puzzle_OLD> successors = temp.getCurrent().successors();
+                ArrayList<Puzzle> successors = temp.getCurrent().successors();
                 Node check = new Node(null,null,0,0);
-                for (Puzzle_OLD puzzle : successors) {
+                for (Puzzle puzzle : successors) {
                     if (heuristic.toLowerCase().equals("hamming")) {
                         check = new Node(temp, puzzle, temp.getDepth(),
                             puzzle.hamming());
@@ -69,7 +69,7 @@ public class Solver_OLD {
         boolean exit = false;
         int input;
 
-        System.out.println("8-Puzzle_OLD Solver_OLD");
+        System.out.println("8-Puzzle Solver_OLD");
 
         do {
             System.out.print("\n   1 - Generate \n" +
@@ -83,7 +83,7 @@ public class Solver_OLD {
                 case 0:
                     System.exit(8);
                 case 1:
-                    Puzzle_OLD generated = Puzzle_OLD.generate(1).pop();
+                    Puzzle generated = Puzzle.generate(1).pop();
                     Solver_OLD.solve(generated, "hamming");
 
                     int depth = Solver_OLD.getDepth();
@@ -114,10 +114,10 @@ public class Solver_OLD {
                             puzzle[i] = Integer.parseInt(temp[i]);
                         }
 
-                        Puzzle_OLD customPuzzle = new Puzzle_OLD(puzzle);
+                        Puzzle customPuzzle = new Puzzle(puzzle);
                         if (customPuzzle.isSolvable()) {
                             System.out.println("\n\n\nHAMMING SOLUTION\n");
-                            Stack<Puzzle_OLD> customPuzzleSolution = Solver_OLD.solve(customPuzzle, "hamming");
+                            Stack<Puzzle> customPuzzleSolution = Solver_OLD.solve(customPuzzle, "hamming");
 
                             while (!customPuzzleSolution.empty()) {
                                 System.out.println(customPuzzleSolution.pop());

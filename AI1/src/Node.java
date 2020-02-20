@@ -1,11 +1,11 @@
 public class Node implements Comparable<Node> {
-    private Puzzle_OLD current;
+    private Puzzle current;
     private Node parent;
     private int depth;
     private int heuristic;
     private int totalCost;
 
-    public Puzzle_OLD getCurrent() {
+    public Puzzle getCurrent() {
         return current;
     }
 
@@ -26,7 +26,8 @@ public class Node implements Comparable<Node> {
     }
 
 
-    public Node(Puzzle_OLD puzzle) {
+
+    public Node(Puzzle puzzle) {
         this.current = puzzle;
         parent = null;
         depth = 0;
@@ -35,7 +36,8 @@ public class Node implements Comparable<Node> {
     }
 
 
-    public Node(Node prev, Puzzle_OLD puzzle, int depth, int heuristic) {
+
+    public Node(Node prev, Puzzle puzzle, int depth, int heuristic) {
         parent = prev;
         this.current = puzzle;
         this.depth = depth;
@@ -43,6 +45,8 @@ public class Node implements Comparable<Node> {
         totalCost = depth + heuristic;
     }
 
+
+    
     @Override
     public int compareTo(Node node) {
         if (this.getTotalCost() > node.getTotalCost())

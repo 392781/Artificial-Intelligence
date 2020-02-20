@@ -17,6 +17,7 @@ public class Puzzle {
     }
 
 
+
     public int hamming() {
         int position = 0;
         int misplaced = 0;
@@ -30,6 +31,7 @@ public class Puzzle {
 
         return misplaced;
     }
+
 
 
     public int manhattan() {
@@ -47,6 +49,7 @@ public class Puzzle {
 
         return distance;
     }
+
 
 
     public ArrayList<Puzzle> successors() {
@@ -92,6 +95,8 @@ public class Puzzle {
         return (inversions % 2 == 0);
     }
 
+
+
     public static Stack<Puzzle> generate(int numberOfPuzzles) {
         Stack<Puzzle> generatedPuzzles = new Stack<>();
         HashSet<Integer> testSet = new HashSet<>();
@@ -126,9 +131,11 @@ public class Puzzle {
     }
 
 
+
     public boolean isGoal() {
         return Arrays.equals(shape, goal);
     }
+
 
 
     public String toString() {
@@ -148,6 +155,7 @@ public class Puzzle {
         return build.toString();
     }
 
+    
 
     private void swap(int hole, int adjacent, ArrayList<Puzzle> successors) {
         int[] temp = shape.clone();
