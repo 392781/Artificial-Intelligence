@@ -1,10 +1,9 @@
-<<<<<<< HEAD
-.idea
-out
-*.iml
 *.txt
-=======
 *.iml
 .idea
+.settings
+bin
+.classpath
+.project
+.gitattributes
 out
->>>>>>> 13dc5195812ed95dc8bfa74b5663468c53cd87fc
