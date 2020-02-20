@@ -69,7 +69,7 @@ public class Solver {
         boolean exit = false;
         int input;
 
-        System.out.println("8-Puzzle Solver_OLD");
+        System.out.println("8-Puzzle Solver");
 
         do {
             System.out.print("\n   1 - Generate \n" +
@@ -84,19 +84,19 @@ public class Solver {
                     System.exit(8);
                 case 1:
                     Puzzle generated = Puzzle.generate(1).pop();
-                    Solver_OLD.solve(generated, "hamming");
+                    Solver.solve(generated, "hamming");
 
-                    int depth = Solver_OLD.getDepth();
-                    int nodes = Solver_OLD.getNodeCost();
+                    int depth = Solver.getDepth();
+                    int nodes = Solver.getNodeCost();
 
                     System.out.println("\n\n\n GENERATED SOLUTION\n");
                     System.out.println("Hamming ------- Depth: " + depth +
                             "\n                Nodes: " + nodes);
 
-                    Solver_OLD.solve(generated, "manhattan");
+                    Solver.solve(generated, "manhattan");
 
-                    depth = Solver_OLD.getDepth();
-                    nodes = Solver_OLD.getNodeCost();
+                    depth = Solver.getDepth();
+                    nodes = Solver.getNodeCost();
 
                     System.out.println("\nManhattan ----- Depth: " + depth +
                             "\n                Nodes: " + nodes);
@@ -117,26 +117,26 @@ public class Solver {
                         Puzzle customPuzzle = new Puzzle(puzzle);
                         if (customPuzzle.isSolvable()) {
                             System.out.println("\n\n\nHAMMING SOLUTION\n");
-                            Stack<Puzzle> customPuzzleSolution = Solver_OLD.solve(customPuzzle, "hamming");
+                            Stack<Puzzle> customPuzzleSolution = Solver.solve(customPuzzle, "hamming");
 
                             while (!customPuzzleSolution.empty()) {
                                 System.out.println(customPuzzleSolution.pop());
                             }
 
-                            int hammingDepth = Solver_OLD.getDepth();
-                            int hammingNodeCost = Solver_OLD.getNodeCost();
+                            int hammingDepth = Solver.getDepth();
+                            int hammingNodeCost = Solver.getNodeCost();
 
 
 
                             System.out.println("\n\n\nMANHATTAN SOLUTION\n");
-                            customPuzzleSolution = Solver_OLD.solve(customPuzzle, "manhattan");
+                            customPuzzleSolution = Solver.solve(customPuzzle, "manhattan");
 
                             while (!customPuzzleSolution.empty()) {
                                 System.out.println(customPuzzleSolution.pop());
                             }
 
-                            int manhattanDepth = Solver_OLD.getDepth();
-                            int manhattanNodeCost = Solver_OLD.getNodeCost();
+                            int manhattanDepth = Solver.getDepth();
+                            int manhattanNodeCost = Solver.getNodeCost();
 
                             System.out.println("Hamming ------- Depth: " + hammingDepth +
                                                 "\n                Nodes: " + hammingNodeCost);
